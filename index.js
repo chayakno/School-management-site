@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { swaggerUi, specs } = require('./swagger'); 
+const { swaggerUi, specs } = require('./src/swagger'); 
 const app = express();
 
 
@@ -25,7 +25,7 @@ app.get('/', function(req, res) {
     res.send('Hello');
 });
 
-const User = require('./models/user.Schema');
+const User = require('./src/models/user.Schema');
 
 
 // דוגמא ליצירת משתמש וסטודנט
