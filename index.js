@@ -25,17 +25,30 @@ app.get('/', function(req, res) {
     res.send('Hello');
 });
 
-const User = require('./src/models/user.Schema');
+const Student=require('./src/models/student.Schema');
 
 
 // דוגמא ליצירת משתמש וסטודנט
-app.post('/create-user', async (req, res) => {
-    const newUser = new User({
+app.post('/create-Student', async (req, res) => {
+    const newUser = new Student({
         userId: 1,
         name: 'John Doe',
         email: 'johndoe@example.com',
-        phone: '1234567890'
+        phone: '1234567890',
+        subjects: ['flute', 'piano'], 
+        age: 20,
+        status: 'pending', 
+        user: 2, 
+        chats: [1], 
+        weeklySchedule: [2] 
+
     });
-    await newUser.save();
-    res.send('User created');
+    await newUser.save()
+
+    .then(savedStudent => {
+        console.log('Student saved successfully:', savedStudent);
+    })
+    .catch(error => {
+        console.error('Error saving student:', error);
+    })
 });

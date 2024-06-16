@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
-const config=require('../config')
-
-// const ChatScheme=require('./chatSchema.Schema');
+ const ChatScheme=require('./chatSchema.Schema');
 const UserSchema = require('./user.Schema');
 const WeeklyScheduleSchema=require('./weekly.Schema');
 const subjectsEnum = ['piano', 'flute', 'guitar', 'organic'];
