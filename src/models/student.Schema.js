@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
-const config=require('../config')
 
-// const ChatScheme=require('./chatSchema.Schema');
+
+const ChatScheme=require('./chatSchema.Schema');
 const UserSchema = require('./user.Schema');
 const WeeklyScheduleSchema=require('./weekly.Schema');
 const subjectsEnum = ['piano', 'flute', 'guitar', 'organic'];
 
 const StudentSchema = new mongoose.Schema({
+
     subjects: [{
         type: String,
         enum: subjectsEnum,
@@ -29,13 +30,13 @@ const StudentSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: false
     },
     chats: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Chat'
     }],
-});
+ });
 
 
 module.exports = mongoose.model('Student', StudentSchema);

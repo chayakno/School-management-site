@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-
+const subjectsEnum = ['piano', 'flute', 'guitar', 'organic'];
 
 const WeeklyScheduleSchema = new mongoose.Schema({
     day: {
