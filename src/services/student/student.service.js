@@ -1,6 +1,11 @@
-
-
 const Student = require('../../models/student.Schema');
+const getAllStudents = async () => {
+    try {
+        return await Student.find();
+    } catch (error) {
+        throw error;
+    }
+};
 
 
 async function addStudent(studentData) {
@@ -13,11 +18,6 @@ async function addStudent(studentData) {
         throw err;
     }
 }
-
-
-
-
-
 
 module.exports = {
     addStudent,getAllStudents
