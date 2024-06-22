@@ -28,7 +28,7 @@ const StudentSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: false
+        required: true
     },
     chats: [{
         type: mongoose.Schema.Types.ObjectId,

@@ -1,13 +1,16 @@
 
 
 const studentService = require('../../services/student/student.service');
+const userService = require('../../services/user/user.services');
 
 async function addStudent(req, res, next) {
     const studentData = req.body;
     console.log(req.body);
     try {
-        const newStudent = await studentService.addStudent(studentData);
-        res.status(201).json(newStudent);
+
+        const newuser = await userService.addUser(req.body);
+         const newstudent=await studentService.addStudent(req.body);
+        res.status(201).json(req.body)
     } catch (err) {
         next(err);
     }
@@ -23,7 +26,6 @@ const getAllStudents = async (req, res) => {
 };
 
 
-
 module.exports = {
-    addStudent,getAllStudents
+    addStudent, getAllStudents,
 };
