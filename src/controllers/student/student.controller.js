@@ -25,7 +25,16 @@ const getAllStudents = async (req, res) => {
     }
 };
 
+const getAllPendingStudents = async (req, res) => {
+    try {
+        const students = await studentService.getAllPendingStudents();
+        res.status(200).json(students);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 
 module.exports = {
-    addStudent, getAllStudents,
+    addStudent, getAllStudents,getAllPendingStudents
 };

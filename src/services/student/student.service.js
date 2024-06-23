@@ -3,7 +3,17 @@ const Student = require('../../models/student.Schema');
 const { User } = require('../../models/user.Schema');
 const getAllStudents = async () => {
     try {
+        
         return await Student.find();
+    } catch (error) {
+        throw error;
+    }
+};
+
+const getAllPendingStudents = async () => {
+    try {
+        const pendingStudents = await Student.find({ status: 'pending' });
+        return pendingStudents;
     } catch (error) {
         throw error;
     }
@@ -19,7 +29,7 @@ async function addStudent(studentData) {
             age: studentData.age,
             weeklySchedule: [],
             hours: studentData.hours,
-            status: "pending",
+            status: "rejected",
             user: user._id,
             chats: studentData.chats
         }
@@ -36,5 +46,5 @@ async function addStudent(studentData) {
 
 
 module.exports = {
-    addStudent, getAllStudents
+    addStudent, getAllStudents,getAllPendingStudents
 };
