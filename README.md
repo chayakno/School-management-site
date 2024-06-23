@@ -1,20 +1,18 @@
 # School-management-site
-
-require("dotenv").config();
-const express = require("express");
-const mongoose = require("mongoose");
-const studRauter = require("./src/routes/student.rout");
-const bodyParser = require("body-parser");
-const cors = require('cors');
-const app = express();
-
-app.use(cors());
-app.use(bodyParser.json());
-app.use("/students", studRauter);
-
-const PORT =  5000;
-mongoose.connect('mongodb://127.0.0.1:27017/School-management',{}).then(
-    ()=>app.listen(PORT,()=>console.log(`server runing on port ${PORT}`)))
-    .catch((error)=>console.log(error.message));
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// אוביקט student לדוגמה :///
+{
+  "subjects": ["piano", "flute"],
+  "age": 15,
+  "weeklySchedule": [
+    "60c8f3775e53052e9c249ec1",
+    "60c8f3785e53052e9c249ec2"
+  ],
+  "status": "pending",
+  "user": "60c8f3795e53052e9c249ec3",
+  "chats": [
+    "60c8f37a5e53052e9c249ec4",
+    "60c8f37b5e53052e9c249ec5"
+  ]
+}
 
     
