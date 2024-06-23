@@ -1,4 +1,4 @@
-{
+http://localhost:5000/students/add{
   
   "subjects": ["piano"],
     "age": 5,
