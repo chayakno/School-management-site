@@ -1,4 +1,6 @@
 const Student = require('../../models/student.Schema');
+
+const { User } = require('../../models/user.Schema');
 const getAllStudents = async () => {
     try {
         return await Student.find();
@@ -7,11 +9,30 @@ const getAllStudents = async () => {
     }
 };
 
+const getAllPendingStudents = async () => {
+    try {
+        const pendingStudents = await Student.find({ status: 'pending' });
+        return pendingStudents;
+    } catch (error) {
+        throw error;
+    }
+};
+
 
 async function addStudent(studentData) {
-    const newStudent = new Student(studentData);
-    console.log(studentData);
+    let user = await User.findOne({ email: studentData.email });
+    
     try {
+        studentData = {
+            subjects: studentData.subjects,
+            age: studentData.age,
+            weeklySchedule: [],
+            hours: studentData.hours,
+            status: "rejected",
+            user: user._id,
+            chats: studentData.chats
+        }
+        const newStudent = new Student(studentData);
         const savedStudent = await newStudent.save();
         return savedStudent;
     } catch (err) {
@@ -20,5 +41,5 @@ async function addStudent(studentData) {
 }
 
 module.exports = {
-    addStudent,getAllStudents
+    addStudent, getAllStudents,getAllPendingStudents
 };

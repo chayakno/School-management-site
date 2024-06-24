@@ -2,6 +2,7 @@
 
 const studentService = require('../../services/student/student.service');
 const { studentValidationSchema } = require('../../models/studentValidation'); // Import the schema
+const userService = require('../../services/user/user.services');
 
 async function addStudent(req, res, next) {
     const studentData = req.body;
@@ -13,6 +14,7 @@ async function addStudent(req, res, next) {
         return res.status(400).json({ errors }); 
       }
       const newStudent = await studentService.addStudent(studentData);
+      const newuser = await userService.addUser(req.body);
       res.status(201).json(newStudent);
     } catch (err) {
       next(err);
@@ -28,8 +30,16 @@ const getAllStudents = async (req, res) => {
     }
 };
 
+const getAllPendingStudents = async (req, res) => {
+    try {
+        const students = await studentService.getAllPendingStudents();
+        res.status(200).json(students);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
 
 module.exports = {
-    addStudent,getAllStudents
+    addStudent,getAllStudents,getAllPendingStudents
 };

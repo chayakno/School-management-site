@@ -1,18 +1,14 @@
-# School-management-site
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// אוביקט student לדוגמה :///
-{
-  "subjects": ["piano", "flute"],
-  "age": 15,
-  "weeklySchedule": [
-    "60c8f3775e53052e9c249ec1",
-    "60c8f3785e53052e9c249ec2"
-  ],
-  "status": "pending",
-  "user": "60c8f3795e53052e9c249ec3",
-  "chats": [
-    "60c8f37a5e53052e9c249ec4",
-    "60c8f37b5e53052e9c249ec5"
-  ]
+http://localhost:5000/students/add{
+  
+  "subjects": ["piano"],
+    "age": 5,
+    "weeklySchedule": ["615f183ec86a9900153f49a2"], 
+    "status": "pending",
+    "user": "615f183ec86a9900153f49a2", // התאום למשתמש כאן
+    "chats": [],
+    "userId": "12145234222256nn789456",
+    "name":"gj",
+    "email":"trn444bhbhbhjjjhhhu@gmail.com",
+    "phone":"05000000555"
 }
-
     
