@@ -1,17 +1,23 @@
 
 
 const studentService = require('../../services/student/student.service');
+const { studentValidationSchema } = require('../../models/studentValidation'); // Import the schema
 
 async function addStudent(req, res, next) {
     const studentData = req.body;
-    console.log(req.body);
+  
     try {
-        const newStudent = await studentService.addStudent(studentData);
-        res.status(201).json(newStudent);
+      const validationResult = studentValidationSchema.validate(studentData, { abortEarly: false });
+      if (validationResult.error) {
+        const errors = validationResult.error.details.map(error => error.message);
+        return res.status(400).json({ errors }); 
+      }
+      const newStudent = await studentService.addStudent(studentData);
+      res.status(201).json(newStudent);
     } catch (err) {
-        next(err);
+      next(err);
     }
-}
+  }
 
 const getAllStudents = async (req, res) => {
     try {
