@@ -3,6 +3,8 @@
 const studentService = require('../../services/student/student.service');
 const { studentValidationSchema } = require('../../models/studentValidation'); // Import the schema
 const userService = require('../../services/user/user.services');
+const { func } = require('joi');
+
 
 async function addStudent(req, res, next) {
     const studentData = req.body;

@@ -14,7 +14,8 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "joi": "^17.13.1",
-    "mongoose": "^8.4.1"
+    "mongoose": "^8.4.1",
+    "postmen": "^2.0.0"
   },
   "devDependencies": {
     "jest": "^29.7.0",

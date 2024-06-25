@@ -7,7 +7,12 @@ const UsersSchema = new mongoose.Schema({
     email: String,
     phone: String,
     password:String,
-    
+    exists: {
+        type: Boolean,
+        default: true
+    },
+
+
 });
 
 const User = mongoose.model('User', UsersSchema);
