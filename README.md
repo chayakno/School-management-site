@@ -1,5 +1,5 @@
 http://localhost:5000/students/add{
-  
+  http://localhost:5000/users/users/userId/status?userId=122222222
   "subjects": ["piano"],
     "age": 5,
     "weeklySchedule": ["615f183ec86a9900153f49a2"], 
