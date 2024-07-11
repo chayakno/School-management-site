@@ -1,69 +1,141 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const studRauter = require("./src/routes/student.rout");
-const userrouter=require("./src/routes/user.rout")
 const bodyParser = require("body-parser");
-const cors = require('cors');
+const cors = require("cors");
+const http = require("http");
+const { Server } = require("socket.io");
+const CHAT_BOT = 'ChatBot';
+let chatRoom = ''; // E.g. javascript, node,...
+let allUsers = []; // All users in current chat room
+const messageservice = require('./src/services/message/message.service');
+
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: '*',
+        methods: ['GET', 'POST'],
+    },
+});
+
+// Middleware
 app.use(express.json());
-
-app.use(cors());
 app.use(bodyParser.json());
-app.use("/students", studRauter);
-app.use("/users",userrouter);
-const PORT =  5000;
-mongoose.connect('mongodb://127.0.0.1:27017/School-management',{}).then(
-    ()=>app.listen(PORT,()=>console.log(`server runing on port ${PORT}`)))
-    .catch((error)=>console.log(error.message));
+app.use(cors());
 
-const Student=require('./src/models/student.Schema');
-const User=require('./src/models/user.Schema');
-const { exist } = require("joi");
+// MongoDB Connection
+const PORT = process.env.PORT || 5000;
+mongoose.connect('mongodb://127.0.0.1:27017/School-management', {})
+    .then(() => {
+        console.log('MongoDB connected');
+        server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    })
+    .catch((error) => console.error('MongoDB connection error:', error.message));
+
+// Socket.IO connection
+io.on('connection', (socket) => {
+    console.log(`User connected ${socket.id}`);
+    socket.on('join_room', async(data) => {
+        console.log(data);
+        const { sender, room } = data; // Data sent from client when join_room event emitted
+        socket.join(room); // Join the user to a socket room
+        let timestamp= Date.now(); // Current timestamp
+        // Send message to all users currently in the room, apart from the user that just joined
+        socket.to(room).emit('receive_message', {
+            content: `${sender} has joined the chat room`,
+            sender: CHAT_BOT,
+            timestamp,
+        });
+        socket.emit('receive_message', {
+            content: `Welcome ${sender}`,
+            sender: CHAT_BOT,
+            timestamp,
+          });
+          chatRoom = room;
+    allUsers.push({ id: socket.id, sender, room });
+    chatRoomUsers = allUsers.filter((user) => user.room === room);
+    socket.to(room).emit('chatroom_users', chatRoomUsers);
+    socket.emit('chatroom_users', chatRoomUsers);
+
+    socket.on('send_message', async(data) => {
+        const { content, sender, room, timestamp } = data;
+        // io.in(room).emit('receive_message', data); 
+        
+        // Call your messageservice function here to add the message to the database
+        try {
+            
+            const newMessage = await messageservice.addMessage(data); 
+            console.log(newMessage);
+            io.in(room).emit('receive_message', newMessage);
+            const last100Messages=await messageservice.get100LastMessage()   
+            console.log(last100Messages); 
+            socket.emit('last_100_messages', last100Messages);
+                // Emitting the saved message to all users in the room
+        } catch (error) {
+            console.error('Error saving message:', error);
+        }
+      
 
 
-// דוגמא ליצירת משתמש וסטודנט
-app.post('/create-Student', async (req, res) => {
-    const newUser = new Student({
+    });
+    });
+});
+
+// Routes
+const studRouter = require("./src/routes/student.rout");
+const userRouter = require("./src/routes/user.rout");
+const messageRouter=require("./src/routes/message.rout")
+
+app.use("/students", studRouter);
+app.use("/message",messageRouter)
+// app.use("/users", userRouter); // Uncomment if you have user routes defined
+
+// Example endpoints
+const Student = require('./src/models/student.Schema');
+const User = require('./src/models/user.Schema');
+const { log } = require("console");
+
+app.post('/create-student', async (req, res) => {
+    const newStudent = new Student({
         userId: 1,
         name: 'John Doe',
         email: 'johndoe@example.com',
         phone: '1234567890',
-        subjects: ['flute', 'piano'], 
+        subjects: ['flute', 'piano'],
         age: 20,
-        status: 'pending', 
-        user: 2, 
-        chats: [1], 
-        weeklySchedule: [2] 
-
+        status: 'pending',
+        user: 2,
+        chats: [1],
+        weeklySchedule: [2]
     });
-    await newUser.save()
 
-    .then(savedStudent => {
+    try {
+        const savedStudent = await newStudent.save();
         console.log('Student saved successfully:', savedStudent);
-    })
-    .catch(error => {
+        res.status(201).json(savedStudent);
+    } catch (error) {
         console.error('Error saving student:', error);
-    })
+        res.status(500).json({ error: 'Error saving student' });
+    }
 });
 
-
-app.post('/create-user' ,async (req, res) =>{
+app.post('/create-user', async (req, res) => {
     const newUser = new User({
         userId: 1,
         name: 'John Doe',
         email: 'johndoe@example.com',
         phone: '1234567890',
-        exists:true,
-        password:'1111'
+        exists: true,
+        password: '1111'
     });
-    await newUser.save()
 
-    .then(savedStudent => {
-        console.log('Student saved successfully:', savedStudent);
-    })
-    .catch(error => {
-        console.error('Error saving student:', error);
-    })
-
-})
+    try {
+        const savedUser = await newUser.save();
+        console.log('User saved successfully:', savedUser);
+        res.status(201).json(savedUser);
+    } catch (error) {
+        console.error('Error saving user:', error);
+        res.status(500).json({ error: 'Error saving user' });
+    }
+});

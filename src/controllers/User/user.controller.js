@@ -3,7 +3,7 @@ const userService = require('../../services/user/user.services');
 
 
 
-async function updateUserStatuss(req, res) {
+async function updateUserStatus(req, res) {
     const { userId } = req.params;
     const { exists } = req.body;
 

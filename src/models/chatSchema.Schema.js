@@ -1,20 +1,35 @@
+const { required } = require('joi');
 const mongoose = require('mongoose');
-const userScheme=require('./user.Schema');
-const MessageScheme=require('./messageSchema.Schema')
+const Message= require('./messageSchema.Schema')
+const User=require('./user.Schema')
+
 const ChatSchema = new mongoose.Schema({
-    participants: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: true
-        }
-    ],
+    roomName: String,
+
     messages: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Message'
         }
-    ]
+    ],
+
+    participants: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+
+        }
+    ],
+
+
+
+
 });
 
-module.exports = mongoose.model('Chat', ChatSchema);
+const Chat = mongoose.model('Chat', ChatSchema);
+
+module.exports = {
+    Chat,
+};
+
+

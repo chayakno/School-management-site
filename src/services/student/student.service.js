@@ -20,6 +20,8 @@ const getAllPendingStudents = async () => {
 
 
 async function addStudent(studentData) {
+    console.log(studentData);
+
     let user = await User.findOne({ email: studentData.email });
     
     try {

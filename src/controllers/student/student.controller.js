@@ -10,11 +10,11 @@ async function addStudent(req, res, next) {
     const studentData = req.body;
   
     try {
-      const validationResult = studentValidationSchema.validate(studentData, { abortEarly: false });
-      if (validationResult.error) {
-        const errors = validationResult.error.details.map(error => error.message);
-        return res.status(400).json({ errors }); 
-      }
+      // const validationResult = studentValidationSchema.validate(studentData, { abortEarly: false });
+      // if (validationResult.error) {
+      //   const errors = validationResult.error.details.map(error => error.message);
+      //   return res.status(400).json({ errors }); 
+      // }
       const newStudent = await studentService.addStudent(studentData);
       const newuser = await userService.addUser(req.body);
       res.status(201).json(newStudent);
