@@ -68,7 +68,7 @@ io.on('connection', (socket) => {
             const newMessage = await messageservice.addMessage(data); 
             console.log(newMessage);
             io.in(room).emit('receive_message', newMessage);
-            const last100Messages=await messageservice.get100LastMessage()   
+            const last100Messages=await messageservice.get100LastMessage(room)   
             console.log(last100Messages); 
             socket.emit('last_100_messages', last100Messages);
                 // Emitting the saved message to all users in the room

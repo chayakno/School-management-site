@@ -17,7 +17,7 @@ const leaveroom =async(req,res)=>{
 const get100LastMessage = async (req, res) => {
     try {
         const  LastMessage = await messageservice.get100LastMessage();
-        res.status(200).json( LastMessage);
+        res.status(200);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
