@@ -10,6 +10,7 @@ let chatRoom = ''; // E.g. javascript, node,...
 let allUsers = []; // All users in current chat room
 const messageservice = require('./src/services/message/message.service');
 
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -36,11 +37,27 @@ mongoose.connect('mongodb://127.0.0.1:27017/School-management', {})
 // Socket.IO connection
 io.on('connection', (socket) => {
     console.log(`User connected ${socket.id}`);
-    socket.on('join_room', async(data) => {
-        console.log(data);
+    socket.on('leave_room', (data) => {
+
+        let timestamp = Date.now();
+        const { sender, room, __createdtime__ } = data;
+
+        // Use room to leave the socket room
+        socket.leave(room);
+        socket.to(room).emit('receive_message', {
+            content: `${data.sender} has left the chat room`,
+            sender: CHAT_BOT,
+            timestamp,
+        });
+
+        console.log(`User has left room ${room}`);
+
+    });
+    socket.on('join_room', async (data) => {
+
         const { sender, room } = data; // Data sent from client when join_room event emitted
         socket.join(room); // Join the user to a socket room
-        let timestamp= Date.now(); // Current timestamp
+        let timestamp = Date.now(); // Current timestamp
         // Send message to all users currently in the room, apart from the user that just joined
         socket.to(room).emit('receive_message', {
             content: `${sender} has joined the chat room`,
@@ -51,44 +68,42 @@ io.on('connection', (socket) => {
             content: `Welcome ${sender}`,
             sender: CHAT_BOT,
             timestamp,
-          });
-          chatRoom = room;
-    allUsers.push({ id: socket.id, sender, room });
-    chatRoomUsers = allUsers.filter((user) => user.room === room);
-    socket.to(room).emit('chatroom_users', chatRoomUsers);
-    socket.emit('chatroom_users', chatRoomUsers);
+        });
+        chatRoom = room;
+        allUsers.push({ id: socket.id, sender, room });
+        chatRoomUsers = allUsers.filter((user) => user.room === room);
+        socket.to(room).emit('chatroom_users', chatRoomUsers);
+        socket.emit('chatroom_users', chatRoomUsers);
+        socket.on('send_message', async (data) => {
+            const { content, sender, room, timestamp } = data;
 
-    socket.on('send_message', async(data) => {
-        const { content, sender, room, timestamp } = data;
-        // io.in(room).emit('receive_message', data); 
-        
-        // Call your messageservice function here to add the message to the database
-        try {
-            
-            const newMessage = await messageservice.addMessage(data); 
-            console.log(newMessage);
-            io.in(room).emit('receive_message', newMessage);
-            const last100Messages=await messageservice.get100LastMessage(room)   
-            console.log(last100Messages); 
-            socket.emit('last_100_messages', last100Messages);
-                // Emitting the saved message to all users in the room
-        } catch (error) {
-            console.error('Error saving message:', error);
-        }
-      
+            try {
 
+                const last100Messages = await messageservice.get100LastMessage(room)
+                socket.emit('last_100_messages', last100Messages);
+                //להראות לחיהלה ששניתי פה
+                const newMessage = await messageservice.addMessage(data);
+                io.in(room).emit('receive_message', newMessage);
+            } catch (error) {
+                console.error('Error saving message:', error);
+            }
+
+
+        });
 
     });
-    });
+
+
+
 });
 
 // Routes
 const studRouter = require("./src/routes/student.rout");
 const userRouter = require("./src/routes/user.rout");
-const messageRouter=require("./src/routes/message.rout")
+const messageRouter = require("./src/routes/message.rout")
 
 app.use("/students", studRouter);
-app.use("/message",messageRouter)
+app.use("/message", messageRouter)
 // app.use("/users", userRouter); // Uncomment if you have user routes defined
 
 // Example endpoints
