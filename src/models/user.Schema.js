@@ -9,17 +9,13 @@ const UsersSchema = new mongoose.Schema({
     password:String,
     exists: {
         type: Boolean,
-        default: true
+        default: false
     },
 
 
 });
 
 const User = mongoose.model('User', UsersSchema);
-
-module.exports = {
-    User,
-};
 
 
 const validUserSchema = Joi.object({
@@ -37,9 +33,6 @@ const validUserSchema = Joi.object({
 });
 
 
-module.exports = {
-    validUserSchema,
-};
 
 module.exports = {
     User,
