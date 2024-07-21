@@ -31,6 +31,7 @@ async function addUser(studentData) {
         }
 
         let newUser = {
+            //userId=passsword
             "userId": studentData.userId,
             "name": studentData.name,
             "email": studentData.email,
@@ -39,6 +40,7 @@ async function addUser(studentData) {
 
         const { error } = validUserSchema.validate(newUser);
         if (error) {
+            console.log("errrrrrrrrrrrrrrrrrrorrr!!!");
             throw new Error(error.details[0].message);
         }
 
